@@ -41,11 +41,9 @@ c2rust-transpile -o "$dst" -e "$src/build-ninja/compile_commands.json"
 
 ./add_link_args.py "$src/build-ninja" "$dst/build.rs"
 
-if [[ "$target_type" != "EXECUTABLE" ]]; then
-  mkdir "$dst/.cargo"
-  echo '[target.x86_64-unknown-linux-gnu]' > "$dst/.cargo/config.toml"
-  echo 'rustflags = ["-Clink-arg=-Wl,-z,lazy", "-Zplt=yes"]' >> "$dst/.cargo/config.toml"
-fi
+mkdir "$dst/.cargo"
+echo '[target.x86_64-unknown-linux-gnu]' > "$dst/.cargo/config.toml"
+echo 'rustflags = ["-Clink-arg=-Wl,-z,lazy", "-Zplt=yes"]' >> "$dst/.cargo/config.toml"
 
 tdst="$1/translated_rust"
 cp -r "$dst" "$tdst"
@@ -57,18 +55,14 @@ if [[ "$target_type" == "EXECUTABLE" ]]; then
     --extern-build-dir "$src/build-ninja" \
     --extern-source-dir "$src" \
     --extern-ignore-return-type \
-    --unsafe-remove-unused \
-    --unsafe-remove-no-mangle \
-    --unsafe-replace-pub \
     --bin-name "$target_name" \
     --pass expand,preprocess,extern,pointer,io,libc,static,unsafe,unexpand,split,bin \
     "$tdst"
 else
   crat \
     --inplace \
-    --unsafe-remove-unused \
-    --unsafe-replace-pub \
     --pass expand,preprocess,extern,pointer,io,libc,static,unsafe,unexpand,split,bin \
     "$tdst"
-  python3 cdylib.py "$tdst"
 fi
+
+./cdylib.py "$src/build-ninja" "$src" "$tdst"

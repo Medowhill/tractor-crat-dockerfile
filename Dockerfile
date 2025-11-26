@@ -49,7 +49,7 @@ RUN git clone https://github.com/Medowhill/c2rust \
 
 RUN git clone https://github.com/kaist-plrg/crat \
  && cd crat \
- && git checkout master \
+ && git checkout 7e7d744 \
  && cd deps_crate \
  && cargo build \
  && cd .. \
@@ -57,10 +57,15 @@ RUN git clone https://github.com/kaist-plrg/crat \
  && ln -s ~/crat/crat ~/local/bin
 
 COPY --chown=ubuntu:ubuntu Test-Corpus Test-Corpus
+WORKDIR /home/ubuntu/Test-Corpus
+
 COPY --chown=ubuntu:ubuntu fixes.patch .
-RUN cd Test-Corpus \
- && git checkout 78e5e3b \
- && git apply ../fixes.patch
+RUN git checkout 96ce4c7 \
+ && git apply fixes.patch \
+ && rm fixes.patch \
+ && cd deployment/scripts/github-actions \
+ && rm run-tests.pyz \
+ && python3 -m zipapp . -m "runtests.__main__:main" -p "/usr/bin/env python3" -o run-tests.pyz
 
 COPY --chown=ubuntu:ubuntu \
      add_link_args.py \
@@ -69,4 +74,4 @@ COPY --chown=ubuntu:ubuntu \
      get_target.py \
      translate.sh \
      translate_all.py \
-     Test-Corpus/
+     ./
