@@ -1,7 +1,7 @@
-From ceb17253fb10f644c96f20c6288d1cfe3811d963 Mon Sep 17 00:00:00 2001
+From 5b52d4d6fc288bffeee533b87cafa1f89f01719a Mon Sep 17 00:00:00 2001
 From: Jaemin Hong <hjm0901@gmail.com>
-Date: Sun, 23 Nov 2025 07:57:40 +0000
-Subject: [PATCH] fix
+Date: Thu, 27 Nov 2025 10:49:57 +0000
+Subject: [PATCH] fixes
 
 ---
  .../B01_organic/hdr_bitrate_lib/test_vectors/101.json     | 1 +
@@ -27,9 +27,10 @@ Subject: [PATCH] fix
  Public-Tests/B01_organic/pow43_lib/test_vectors/83.json   | 6 ++++--
  Public-Tests/B01_organic/pow43_lib/test_vectors/84.json   | 1 +
  .../B01_organic/tritanopia_lib/test_vectors/3.json        | 1 +
+ .../007_errno-pow_lib/test_case/include/pow.h             | 2 +-
  .../scripts/github-actions/runtests/runners/lib_runner.py | 6 ++++--
  tools/cando2/src/lib.rs                                   | 8 ++++++++
- 25 files changed, 38 insertions(+), 4 deletions(-)
+ 26 files changed, 39 insertions(+), 5 deletions(-)
 
 diff --git a/Public-Tests/B01_organic/hdr_bitrate_lib/test_vectors/101.json b/Public-Tests/B01_organic/hdr_bitrate_lib/test_vectors/101.json
 index 81f52f6..bea4839 100644
@@ -268,6 +269,18 @@ index 4887130..731639b 100644
  	"lib_state_in": {
  		"rgb": {
  			"r": 92,
+diff --git a/Public-Tests/B01_synthetic/007_errno-pow_lib/test_case/include/pow.h b/Public-Tests/B01_synthetic/007_errno-pow_lib/test_case/include/pow.h
+index 99a6ea5..ad613ad 100644
+--- a/Public-Tests/B01_synthetic/007_errno-pow_lib/test_case/include/pow.h
++++ b/Public-Tests/B01_synthetic/007_errno-pow_lib/test_case/include/pow.h
+@@ -24,6 +24,6 @@
+ #ifndef ECHO_H_
+ #define ECHO_H_
+ 
+-double pow(double base, double exponent);
++double my_pow(double base, double exponent);
+ 
+ #endif //ECHO_H_
 diff --git a/deployment/scripts/github-actions/runtests/runners/lib_runner.py b/deployment/scripts/github-actions/runtests/runners/lib_runner.py
 index 70854f1..4612256 100644
 --- a/deployment/scripts/github-actions/runtests/runners/lib_runner.py

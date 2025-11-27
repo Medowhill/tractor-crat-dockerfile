@@ -45,23 +45,37 @@ mkdir "$dst/.cargo"
 echo '[target.x86_64-unknown-linux-gnu]' > "$dst/.cargo/config.toml"
 echo 'rustflags = ["-Clink-arg=-Wl,-z,lazy", "-Zplt=yes"]' >> "$dst/.cargo/config.toml"
 
+./find_fns.py "$src/build-ninja/compile_commands.json" "$src/test_case" "$src/config.toml"
+
 tdst="$1/translated_rust"
 cp -r "$dst" "$tdst"
 
 if [[ "$target_type" == "EXECUTABLE" ]]; then
   crat \
+    --config "$src/config.toml" \
     --inplace \
     --extern-cmake-reply-index-file "$src/build-ninja/.cmake/api/v1/reply/index-*.json" \
     --extern-build-dir "$src/build-ninja" \
     --extern-source-dir "$src" \
     --extern-ignore-return-type \
+    --io-assume-to-str-ok \
+    --unsafe-remove-unused \
+    --unsafe-remove-no-mangle \
+    --unsafe-remove-extern-c \
+    --unsafe-replace-pub \
     --bin-name "$target_name" \
-    --pass expand,preprocess,extern,pointer,io,libc,static,unsafe,unexpand,split,bin \
+    --pass expand,preprocess,extern,pointer,io,libc,static,interface,unsafe,unexpand,split,bin \
     "$tdst"
 else
   crat \
+    --config "$src/config.toml" \
     --inplace \
-    --pass expand,preprocess,extern,pointer,io,libc,static,unsafe,unexpand,split,bin \
+    --io-assume-to-str-ok \
+    --unsafe-remove-unused \
+    --unsafe-remove-no-mangle \
+    --unsafe-remove-extern-c \
+    --unsafe-replace-pub \
+    --pass expand,preprocess,extern,pointer,io,libc,static,interface,unsafe,unexpand,split \
     "$tdst"
 fi
 

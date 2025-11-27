@@ -56,6 +56,14 @@ RUN git clone https://github.com/kaist-plrg/crat \
  && cargo build --release --bin crat \
  && ln -s ~/crat/crat ~/local/bin
 
+RUN cd crat \
+ && git checkout master \
+ && git pull \
+ && git checkout 717da2e \
+ && cargo build --release --bin crat
+
+RUN pip3 install libclang
+
 COPY --chown=ubuntu:ubuntu Test-Corpus Test-Corpus
 WORKDIR /home/ubuntu/Test-Corpus
 
@@ -70,6 +78,7 @@ RUN git checkout 96ce4c7 \
 COPY --chown=ubuntu:ubuntu \
      add_link_args.py \
      cdylib.py \
+     find_fns.py \
      filter_files.py \
      get_target.py \
      translate.sh \
