@@ -36,12 +36,12 @@ RUN cd Python-3.14.0 \
  && make install \
  && cd .. \
  && rm -rf Python-3.14.0
-RUN pip3 install toml
+RUN pip3 install toml libclang
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
   | sh -s -- -y -q --default-toolchain nightly-2025-06-23-x86_64-unknown-linux-gnu
 
-RUN git clone https://github.com/Medowhill/c2rust \
+RUN git clone https://github.com/Yale-PROCTOR/c2rust \
  && cd c2rust \
  && git checkout tractor-0.21.0 \
  && cargo build --release -Z sparse-registry \
@@ -49,20 +49,12 @@ RUN git clone https://github.com/Medowhill/c2rust \
 
 RUN git clone https://github.com/kaist-plrg/crat \
  && cd crat \
- && git checkout 7e7d744 \
+ && git checkout 8d0b27e \
  && cd deps_crate \
  && cargo build \
  && cd .. \
  && cargo build --release --bin crat \
  && ln -s ~/crat/crat ~/local/bin
-
-RUN cd crat \
- && git checkout master \
- && git pull \
- && git checkout 8d0b27e \
- && cargo build --release --bin crat
-
-RUN pip3 install libclang
 
 COPY --chown=ubuntu:ubuntu Test-Corpus Test-Corpus
 WORKDIR /home/ubuntu/Test-Corpus
